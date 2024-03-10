@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "900015345296",
+    "project_id": "news-sport-api",
+    "storage_bucket": "news-sport-api.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900015345296:android:10c6f679782fc251339215",
+        "android_client_info": {
+          "package_name": "com.example.news_app_api"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9xHIQm8fxdoPGSZbeYe5Ha-2-9jkZ7Ms"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
