@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_app_api/core/color/colors.dart';
+import 'package:news_app_api/helper/sharedpreference.dart';
+import 'package:news_app_api/presentation/dashbaord/dashboard.dart';
 import 'package:news_app_api/presentation/login/screen_login.dart';
 
 class SplashScrn extends StatefulWidget {
@@ -11,12 +13,14 @@ class SplashScrn extends StatefulWidget {
   State<SplashScrn> createState() => _SplashScrnState();
 }
 
+final SharedpreferenceClass sharedController = Get.put(SharedpreferenceClass());
 bool issignedIn = false;
 String email = '';
 
 class _SplashScrnState extends State<SplashScrn> {
   @override
   void initState() {
+    sharedController.getUserUIDInStatus();
     splashtime();
     super.initState();
   }
@@ -47,7 +51,11 @@ class _SplashScrnState extends State<SplashScrn> {
     Future.delayed(
       const Duration(seconds: 4),
       () async {
-        Get.off(() => LoginScreen());
+        if (sharedController.uid.value.isEmpty) {
+          Get.off(() => LoginScreen());
+        } else {
+          Get.off(() => const DashboardScrn());
+        }
       },
     );
   }

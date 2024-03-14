@@ -1,8 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:news_app_api/application/home/home_bloc.dart';
 import 'package:news_app_api/core/color/colors.dart';
+import 'package:news_app_api/core/constants/constants.dart';
+import 'package:news_app_api/domain/categories_and_country/model/categories_country.dart';
+import 'package:news_app_api/domain/home/model/search_home.dart';
 import 'package:news_app_api/presentation/home/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app_api/presentation/home_detail/home_detail_screen.dart';
+import 'package:share/share.dart';
 
 class AppBarIconBtnWidget extends StatelessWidget {
   const AppBarIconBtnWidget({
@@ -174,10 +184,12 @@ class ChoiceChipsWidget extends StatelessWidget {
     required this.choicechipNumber,
     required this.title,
     required this.valueListenable,
+    this.iscategories = false,
   });
   final int choicechipNumber;
   final String title;
   final ValueNotifier<int> valueListenable;
+  final bool iscategories;
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -194,8 +206,147 @@ class ChoiceChipsWidget extends StatelessWidget {
         selected: choiceValue == choicechipNumber,
         onSelected: (value) {
           valueListenable.value = choicechipNumber;
+          if (iscategories == false) {
+            BlocProvider.of<HomeBloc>(context)
+                .add(Homeloading(query: title, country: 'in'));
+            isCategories = false;
+          } else {
+            BlocProvider.of<HomeBloc>(context).add(Categoriesloading(
+                categories: categoriesList[choiceChipsIndexNotiCategorie.value],
+                country: 'in'));
+          }
         },
         selectedColor: colorApp,
+      ),
+    );
+  }
+}
+
+class NewsContainerBigWidget extends StatelessWidget {
+  const NewsContainerBigWidget({
+    super.key,
+    required this.imageurl,
+    required this.title,
+    required this.url,
+    required this.description,
+    required this.articles,
+  });
+  final String? imageurl;
+  final String? title;
+  final String? url;
+  final String? description;
+  final HomeArticles articles;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        InkWell(
+          onTap: () {
+            Get.to(() => HomeDetailScrn(model: articles));
+          },
+          child: Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                width: Get.width * 0.9,
+                height: Get.height * 0.3,
+                decoration: BoxDecoration(
+                  color: lightBlack,
+                  borderRadius: BorderRadius.circular(20),
+                  image: imageurl != null
+                      ? DecorationImage(
+                          image: NetworkImage(
+                            imageurl!,
+                          ),
+                          fit: BoxFit.fill)
+                      : null,
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 15,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: colorGrey.shade800,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: IconButton(
+                      onPressed: () {
+                        Share.share('$title\n$description\n$url');
+                      },
+                      icon: const Icon(Icons.share)),
+                ),
+              ),
+              Positioned(
+                bottom: 20,
+                child: SizedBox(
+                  width: Get.width * 0.9,
+                  child: Align(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      width: Get.width * 0.8,
+                      height: Get.height * 0.1,
+                      decoration: BoxDecoration(
+                        color: colorGrey.shade800,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: Text(
+                          title ?? '',
+                          overflow: TextOverflow.fade,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        sizedBox15W
+      ],
+    );
+  }
+}
+
+class CategoriesListTile extends StatelessWidget {
+  const CategoriesListTile({super.key, required this.model});
+  final ArticleCategories model;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      width: Get.width,
+      decoration: BoxDecoration(
+          color: lightBlack.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(20)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            width: Get.width * 0.3,
+            height: Get.width * 0.3,
+            decoration: BoxDecoration(
+                color: colorGrey.shade800,
+                borderRadius: BorderRadius.circular(20),
+                image: DecorationImage(
+                    image: NetworkImage(model.urlToImage != null
+                        ? model.urlToImage!
+                        : failImageUrl),
+                    fit: BoxFit.fill)),
+          ),
+          sizedBox15W,
+          Expanded(
+            child: Center(
+              child: Text(
+                model.title ?? '',
+                textAlign: TextAlign.justify,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

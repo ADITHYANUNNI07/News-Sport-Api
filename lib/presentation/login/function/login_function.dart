@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:news_app_api/core/color/colors.dart';
 import 'package:news_app_api/firebase/auth/auth.dart';
 import 'package:news_app_api/getx/snackBar/snackbar.dart';
-import 'package:news_app_api/presentation/login/screen_login.dart';
 
 ValueNotifier<bool?> phoneNoValueNoti = ValueNotifier(null);
 GetxSnackBarControllerClass snackBarConroller =

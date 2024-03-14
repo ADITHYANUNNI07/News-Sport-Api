@@ -11,5 +11,3 @@ class LoginScrnGetxControllerClass extends GetxController {
     isLoading.value = isLoad;
   }
 }
-
-
